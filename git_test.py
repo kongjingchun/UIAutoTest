@@ -5,4 +5,5 @@
 # @Desc  :
 
 def git_test():
-    print("git_test")
+    print("git_test1")
+    getattr()
