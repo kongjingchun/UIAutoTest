@@ -1,12 +1,14 @@
 # encoding: utf-8
 # @File  : driver_config.py
 # @Author: kongjingchun
-# @Date  : 2025/10/14/16:14
-# @Desc  : 浏览器驱动配置，兼容 Selenium 4.36
+# @Date  : 2025/12/01/17:52
+# @Desc  :
+
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+
+from common.tools import get_project_path, sep
 
 
 class DriverConfig:
@@ -16,15 +18,12 @@ class DriverConfig:
         初始化 Chrome 浏览器驱动，兼容 Selenium 4.36
         :return: WebDriver 实例
         """
-        # 创建 ChromeOptions
-        options = webdriver.ChromeOptions()
+        # 去除“Chrome正受到自动测试软件控制”的提示
 
-        # 基础设置
-        options.add_argument("--disable-infobars")
-        options.add_argument("window-size=1920,1080")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--no-sandbox")  # 修正拼写错误：no-sanbox → no-sandbox
-        options.add_argument('--disable-dev-shm-usage')
+        options = webdriver.ChromeOptions()
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        # options.add_experimental_option('useAutomationExtension', False)
+        # options.add_argument('--disable-blink-features=AutomationControlled')
 
         # 安全与证书相关（解决 HTTPS 警告）
         options.add_argument("--disable-features=HttpsFirstMode")
@@ -36,26 +35,27 @@ class DriverConfig:
         options.add_argument("--disable-site-isolation-trials")
         options.add_argument("--disable-3d-apis")
 
-        # 无痕模式
+
+        # 解决浏senium无法访问https的问题
+        # options.add_argument('--ignore-certificate-errors')
+
+        # 设置无痕模式
         # options.add_argument("--incognito")
+        # 禁用GPU加速，解决某些系统上的图形渲染问题
+        options.add_argument("--disable-gpu")
+        # 禁用沙箱模式，适用于容器化环境或权限受限的系统
+        options.add_argument("--no-sandbox")
+        # 禁用devshm使用，解决内存不足问题
+        options.add_argument("--disable-dev-shm-usage")
 
-        # 去除“Chrome 正受到自动测试软件控制”提示
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        # 设置无头模式（无界面执行自动化测试）
+        # options.add_argument("--headless")
 
-        # 设置服务对象
-        service = Service(ChromeDriverManager().install())
+        # 创建 ChromeDriver 服务，指定驱动程序路径
+        service = Service(executable_path=get_project_path() + sep(["driver_files", "chromedriver"], add_sep_before=True))
 
-        # 创建浏览器实例
+        # 初始化 Chrome 浏览器实例，并设置窗口最大化
         driver = webdriver.Chrome(service=service, options=options)
-
-        # 设置隐式等待
-        driver.implicitly_wait(3)
-
-        # 清除 cookies
-        driver.delete_all_cookies()
-
+        driver.maximize_window()  # 设置浏览器全屏
+        driver.delete_all_cookies()  # 删除所有cookies
         return driver
-
-
-if __name__ == "__main__":
-    DriverConfig().driver_config()
