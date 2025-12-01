@@ -4,11 +4,12 @@
 # @Date  : 2025/11/28/16:54
 # @Desc  :
 import yaml
+from common.tools import get_project_path, sep
 
 
 class GetConf:
     def __init__(self):
-        with open("/Users/kongjingchun/Documents/code/study_code/Python/trading_system_autotest/config/environment.yaml", encoding="utf-8") as env_file:
+        with open(get_project_path() + sep(["config", "environment.yaml"], add_sep_before=True), "r", encoding="utf-8") as env_file:
             self.env_data = yaml.load(env_file, Loader=yaml.FullLoader)
 
     def get_username_password(self):
