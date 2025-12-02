@@ -28,3 +28,11 @@ class HomeBase:
         :return:
         """
         return "//span[starts-with(text(),'回来')]"
+
+    @staticmethod
+    def show_data():
+        """
+        日期显示
+        :return:
+        """
+        return "//div[text()='我的日历']/following-sibling::div"
