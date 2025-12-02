@@ -13,7 +13,7 @@ class TestLogin:
     def test_login(self):
         driver = DriverConfig.driver_config()
         driver.get("http://120.53.230.254/login")
-        sleep(3)
+        sleep(1)
         LoginPage().login_input_value(driver, "用户名", "周杰伦")
         sleep(1)
         LoginPage().login_input_value(driver, "密码", "1234abcd!")

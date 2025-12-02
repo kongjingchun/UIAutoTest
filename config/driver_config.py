@@ -8,6 +8,10 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
+
 from common.tools import get_project_path, sep
 
 
@@ -35,7 +39,6 @@ class DriverConfig:
         options.add_argument("--disable-site-isolation-trials")
         options.add_argument("--disable-3d-apis")
 
-
         # 解决浏senium无法访问https的问题
         # options.add_argument('--ignore-certificate-errors')
 
@@ -52,10 +55,13 @@ class DriverConfig:
         # options.add_argument("--headless")
 
         # 创建 ChromeDriver 服务，指定驱动程序路径
-        service = Service(executable_path=get_project_path() + sep(["driver_files", "chromedriver"], add_sep_before=True))
+        # service = Service(executable_path=get_project_path() + sep(["driver_files", "chromedriver"], add_sep_before=True))
+        # driver = webdriver.Chrome(service=service, )
 
-        # 初始化 Chrome 浏览器实例，并设置窗口最大化
-        driver = webdriver.Chrome(service=service, options=options)
+        # 初始化 Chrome 浏览器实例
+        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager(url="https://mirrors.huaweicloud.com/chromedriver", latest_release_url="https://mirrors.huaweicloud.com/chromedriver/LATEST_RELEASE").install()),
+                                  options=options)
+
         driver.maximize_window()  # 设置浏览器全屏
         driver.delete_all_cookies()  # 删除所有cookies
         return driver
