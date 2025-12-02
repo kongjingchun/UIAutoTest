@@ -36,3 +36,10 @@ class HomeBase:
         :return:
         """
         return "//div[text()='我的日历']/following-sibling::div"
+    @staticmethod
+    def home_user_avata():
+        """
+        用户头像
+        :return:
+        """
+        return "//span[contains(text(),'欢迎')]/parent::div/preceding-sibling::div//img"
