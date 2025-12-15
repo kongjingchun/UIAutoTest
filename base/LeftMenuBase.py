@@ -26,5 +26,3 @@ class LeftMenuBase:
 
 if __name__ == '__main__':
     print(LeftMenuBase().level_one_menu("已卖出的宝贝"))
-
-
