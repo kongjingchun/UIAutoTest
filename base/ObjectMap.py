@@ -13,10 +13,10 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class ObjectMap:
     @staticmethod
-    def element_get(driver: WebDriver, locate_type: By, locator_expression: str,
-                    timeout: int = 10, is_visibility: bool = False) -> WebElement:
+    def wait_and_get_element(driver: WebDriver, locate_type: By, locator_expression: str,
+                             timeout: int = 10, is_visibility: bool = False) -> WebElement:
         """
-        获取页面元素对象，支持超时等待和可见性判断
+        等待并获取页面元素对象，支持超时等待和可见性判断
 
         Args:
             driver: 浏览器驱动对象
@@ -85,3 +85,67 @@ class ObjectMap:
             return True
         except TimeoutException:
             raise TimeoutException(f"页面加载超时，超时时间: {timeout}秒")
+
+    @staticmethod
+    def element_disappear(driver: WebDriver, locate_type: By, locator_expression: str,
+                          timeout: int = 10) -> bool:
+        """
+        等待元素消失（不可见或从DOM中移除）
+        常用于等待加载动画、提示信息等元素消失
+
+        Args:
+            driver: 浏览器驱动对象
+            locate_type: 元素定位方式 (By.ID, By.XPATH等)
+            locator_expression: 元素定位表达式
+            timeout: 超时时间(秒)，默认10秒
+
+        Returns:
+            bool: 元素消失返回True
+
+        Raises:
+            TimeoutException: 元素未在指定时间内消失
+        """
+        try:
+            wait = WebDriverWait(driver, timeout)
+            
+            # 等待元素不可见或从DOM中移除
+            # invisibility_of_element_located 会处理元素不存在的情况
+            condition = EC.invisibility_of_element_located((locate_type, locator_expression))
+            
+            wait.until(condition)
+            return True
+        except TimeoutException:
+            raise TimeoutException(
+                f"元素未消失（超时），定位方式: {locate_type}，"
+                f"定位表达式: {locator_expression}，超时时间: {timeout}秒"
+            )
+
+    @staticmethod
+    def element_appear(driver: WebDriver, locate_type: By, locator_expression: str,
+                       timeout: int = 30) -> bool:
+        """
+        等待元素出现（可见或从DOM中加载）
+        常用于等待加载动画、提示信息等元素出现
+
+        Args:
+            driver: 浏览器驱动对象
+            locate_type: 元素定位方式 (By.ID, By.XPATH等)
+            locator_expression: 元素定位表达式
+            timeout: 超时时间(秒)，默认30秒
+
+        Returns:
+            bool: 元素出现返回True
+
+        Raises:
+            TimeoutException: 元素未在指定时间内出现
+        """
+        try:
+            wait = WebDriverWait(driver, timeout)
+            condition = EC.presence_of_element_located((locate_type, locator_expression))
+            wait.until(condition)
+            return True
+        except TimeoutException:
+            raise TimeoutException(
+                f"元素未出现（超时），定位方式: {locate_type}，"
+                f"定位表达式: {locator_expression}，超时时间: {timeout}秒"
+            )
