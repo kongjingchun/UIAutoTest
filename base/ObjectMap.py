@@ -504,3 +504,44 @@ class ObjectMap:
         handles = driver.window_handles
         # 切换到最新的窗口句柄
         driver.switch_to.window(handles[-1])
+
+    def switch_into_iframe(self, driver, locate_iframe_type, locator_iframe_expression, timeout=10):
+        """
+        切换到指定 iframe
+
+        Args:
+            driver: 浏览器驱动对象
+            locate_iframe_type: iframe 的定位方式（如 By.ID, By.XPATH 等）
+            locator_iframe_expression: iframe 的定位表达式
+            timeout: 等待 iframe 出现的超时时间(秒)，默认10秒
+
+        Raises:
+            ElementNotVisibleException: 未能在超时时间内定位或切换到 iframe
+        """
+        # 等待并获取 iframe 元素（必须可见，确保可切换）
+        iframe = self.element_get(
+            driver,
+            locate_iframe_type,
+            locator_iframe_expression,
+            timeout=timeout,
+            must_be_visible=True
+        )
+        # 切换到目标 iframe
+        driver.switch_to.frame(iframe)
+        
+    def switch_from_iframe_to_content(self, driver, to_root: bool = False):
+        """
+        退出 iframe，切回页面内容
+
+        Args:
+            driver: 浏览器驱动对象
+            to_root: True 时直接回到顶层文档；False 时仅返回上一层 iframe
+
+        Returns:
+            None
+        """
+        # 根据需要选择退出到顶层或仅退出一层 iframe
+        if to_root:
+            driver.switch_to.default_content()
+        else:
+            driver.switch_to.parent_frame()
