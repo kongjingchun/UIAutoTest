@@ -58,8 +58,6 @@ def get_img_path(img_name):
     return get_project_path() + sep(['img', img_name], add_sep_before=True)
 
 
-
 if __name__ == '__main__':
     # 测试函数功能
-    print(get_img_path('机器猫.img'))
-
+    print(sep(['img', '机器猫.png']))

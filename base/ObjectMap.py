@@ -1,4 +1,5 @@
 import time
+from time import sleep
 from urllib.parse import urljoin
 
 from selenium.common.exceptions import ElementNotVisibleException, WebDriverException, NoSuchElementException, \
@@ -6,7 +7,9 @@ from selenium.common.exceptions import ElementNotVisibleException, WebDriverExce
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
+from common.find_img import FindImg
 from common.yaml_config import GetConf
+from common.tools import get_project_path, sep
 
 
 class ObjectMap:
@@ -72,7 +75,7 @@ class ObjectMap:
 
                 # 如果页面完全加载完成，等待一小段时间确保页面稳定，然后返回
                 if ready_state == "complete":
-                    time.sleep(0.01)  # 短暂等待，确保页面完全稳定
+                    time.sleep(1)  # 短暂等待，确保页面完全稳定
                     return True
 
             except WebDriverException as e:
@@ -479,7 +482,7 @@ class ObjectMap:
         )
         # 切换到目标 iframe
         driver.switch_to.frame(iframe)
-        
+
     def switch_from_iframe_to_content(self, driver, to_root: bool = False):
         """
         退出 iframe，切回页面内容
@@ -540,3 +543,15 @@ class ObjectMap:
         actions = ActionChains(driver)
         actions.context_click(element)
         return actions
+
+    def find_img_in_source(self, driver, img_name):
+        source_img_path = get_project_path() + sep(['img', 'source_img', img_name], add_sep_before=True)
+        search_img_path = get_project_path() + sep(['img', 'assert_img', img_name], add_sep_before=True)
+        print(source_img_path)
+        print(search_img_path)
+        # 等待页面完全加载完成
+        self.wait_for_ready_state_complete(driver)
+        # 截图
+        driver.get_screenshot_as_file(source_img_path)
+        sleep(2)
+        return FindImg().get_confidence(source_img_path, search_img_path)
