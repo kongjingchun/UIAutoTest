@@ -1,5 +1,3 @@
-import datetime
-import os.path
 import time
 from urllib.parse import urljoin
 
@@ -9,7 +7,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
 from common.yaml_config import GetConf
-from common.tools import get_project_path, sep
 
 
 class ObjectMap:
@@ -54,18 +51,9 @@ class ObjectMap:
     def wait_for_ready_state_complete(self, driver, timeout=30):
         """
         等待页面完全加载完成
-        通过检查 document.readyState 状态来判断页面是否加载完成
-        
-        Args:
-            driver: 浏览器驱动对象
-            timeout: 超时时间(秒)，默认30秒
-            
-        Returns:
-            bool: 页面加载完成返回True
-            
-        Raises:
-            TimeoutError: 页面在超时时间内未完全加载完成
-            WebDriverException: WebDriver执行JavaScript失败
+        :param driver: 浏览器驱动对象
+        :param timeout: 超时时间(秒)，默认30秒
+        :return: 页面加载完成返回True
         """
         # 计算结束时间（使用秒为单位，更简洁）
         end_time = time.time() + timeout
@@ -108,11 +96,11 @@ class ObjectMap:
     def element_disappear(self, driver, locate_type, locator_expression, timeout=30):
         """
         等待页面元素消失
-        :param driver:浏览器驱动
-        :param locate_type:定位方式类型
-        :param locator_expression:定位表达式
-        :param timeout:超时时间
-        :return:
+        :param driver: 浏览器驱动
+        :param locate_type: 定位方式类型
+        :param locator_expression: 定位表达式
+        :param timeout: 超时时间
+        :return: 元素消失返回True
         """
         if locate_type:
             # 开始时间
@@ -136,19 +124,11 @@ class ObjectMap:
     def element_appear(self, driver, locate_type, locator_expression, timeout=30):
         """
         等待页面元素出现并返回元素对象
-        持续检查元素是否存在且可见，直到超时或元素出现
-        
-        Args:
-            driver: 浏览器驱动对象
-            locate_type: 元素定位方式（如 By.ID, By.XPATH等），为None则直接返回None
-            locator_expression: 元素定位表达式
-            timeout: 超时时间(秒)，默认30秒
-            
-        Returns:
-            WebElement: 找到的元素对象
-            
-        Raises:
-            ElementNotVisibleException: 元素在超时时间内未出现或不可见
+        :param driver: 浏览器驱动对象
+        :param locate_type: 元素定位方式，为None则直接返回None
+        :param locator_expression: 元素定位表达式
+        :param timeout: 超时时间(秒)，默认30秒
+        :return: 找到的元素对象
         """
         # 如果定位方式为None，直接返回None（不进行等待）
         if not locate_type:
@@ -202,19 +182,14 @@ class ObjectMap:
     ):
         """
         导航到指定URL并等待页面元素状态变化
-        先等待页面加载完成，然后等待指定元素消失（如果提供），最后等待指定元素出现（如果提供）
-        
-        Args:
-            driver: 浏览器驱动对象
-            url: 要访问的URL（相对路径或绝对路径）
-            locate_type_disappear: 等待页面元素消失的定位方式，为None则跳过
-            locator_expression_disappear: 等待页面元素消失的定位表达式
-            locate_type_appear: 等待页面元素出现的定位方式，为None则跳过
-            locator_expression_appear: 等待页面元素出现的定位表达式
-            timeout: 超时时间(秒)，默认30秒
-            
-        Returns:
-            bool: 操作成功返回True，失败返回False
+        :param driver: 浏览器驱动对象
+        :param url: 要访问的URL（相对路径或绝对路径）
+        :param locate_type_disappear: 等待页面元素消失的定位方式，为None则跳过
+        :param locator_expression_disappear: 等待页面元素消失的定位表达式
+        :param locate_type_appear: 等待页面元素出现的定位方式，为None则跳过
+        :param locator_expression_appear: 等待页面元素出现的定位表达式
+        :param timeout: 超时时间(秒)，默认30秒
+        :return: 操作成功返回True，失败返回False
         """
 
         # 初始化full_url变量，用于异常处理
@@ -279,10 +254,10 @@ class ObjectMap:
     def element_is_display(self, driver, locate_type, locator_expression):
         """
         元素是否显示
-        :param driver:
-        :param locate_type:
-        :param locator_expression:
-        :return:
+        :param driver: 浏览器驱动
+        :param locate_type: 定位方式类型
+        :param locator_expression: 定位表达式
+        :return: 元素存在返回True，不存在返回False
         """
         try:
             driver.find_element(by=locate_type, value=locator_expression)
@@ -294,17 +269,12 @@ class ObjectMap:
     def element_fill_value(self, driver, locate_type, locator_expression, fill_value, timeout=30):
         """
         向页面元素填充值（输入文本）
-        支持自动处理换行符（\n），如果值以换行符结尾，会在输入后自动按回车键
-        
-        Args:
-            driver: 浏览器驱动对象
-            locate_type: 元素定位方式
-            locator_expression: 元素定位表达式
-            fill_value: 要填充的值（支持字符串、数字等类型）
-            timeout: 等待元素出现的超时时间(秒)，默认30秒
-            
-        Returns:
-            bool: 填充成功返回True，失败抛出异常
+        :param driver: 浏览器驱动对象
+        :param locate_type: 元素定位方式
+        :param locator_expression: 元素定位表达式
+        :param fill_value: 要填充的值（支持字符串、数字等类型）
+        :param timeout: 等待元素出现的超时时间(秒)，默认30秒
+        :return: 填充成功返回True，失败抛出异常
         """
         # 将填充值转换为字符串
         fill_value = str(fill_value)
@@ -370,20 +340,15 @@ class ObjectMap:
     ):
         """
         点击页面元素并等待相关元素状态变化
-        先等待元素出现，然后点击元素，最后等待指定元素出现或消失（如果提供）
-        
-        Args:
-            driver: 浏览器驱动对象
-            locate_type: 要点击的元素定位方式
-            locator_expression: 要点击的元素定位表达式
-            locate_type_disappear: 点击后等待消失的元素定位方式，为None则跳过
-            locator_expression_disappear: 点击后等待消失的元素定位表达式
-            locate_type_appear: 点击后等待出现的元素定位方式，为None则跳过
-            locator_expression_appear: 点击后等待出现的元素定位表达式
-            timeout: 超时时间(秒)，默认30秒
-            
-        Returns:
-            bool: 操作成功返回True，失败返回False
+        :param driver: 浏览器驱动对象
+        :param locate_type: 要点击的元素定位方式
+        :param locator_expression: 要点击的元素定位表达式
+        :param locate_type_disappear: 点击后等待消失的元素定位方式，为None则跳过
+        :param locator_expression_disappear: 点击后等待消失的元素定位表达式
+        :param locate_type_appear: 点击后等待出现的元素定位方式，为None则跳过
+        :param locator_expression_appear: 点击后等待出现的元素定位表达式
+        :param timeout: 超时时间(秒)，默认30秒
+        :return: 操作成功返回True，失败返回False
         """
         # 参数验证：检查必需的定位参数
         if not locate_type or not locator_expression:
@@ -473,18 +438,11 @@ class ObjectMap:
     def upload(self, driver, locate_type, locator_expression, file_path):
         """
         文件上传功能
-
-        Args:
-            driver: 浏览器驱动对象
-            locate_type: 文件上传元素的定位方式
-            locator_expression: 文件上传元素的定位表达式
-            file_path: 要上传的文件路径
-
-        Returns:
-            WebElement.send_keys()方法的返回值
-
-        Raises:
-            ElementNotVisibleException: 元素定位失败或元素不可见
+        :param driver: 浏览器驱动对象
+        :param locate_type: 文件上传元素的定位方式
+        :param locator_expression: 文件上传元素的定位表达式
+        :param file_path: 要上传的文件路径
+        :return: WebElement.send_keys()方法的返回值
         """
         # 获取文件上传输入框元素
         element = self.element_get(driver, locate_type, locator_expression)
@@ -494,12 +452,8 @@ class ObjectMap:
     def switch_windows_2_latest_handle(self, driver):
         """
         切换到最新的窗口句柄
-
-        Args:
-            driver: 浏览器驱动对象
-
-        Returns:
-            None
+        :param driver: 浏览器驱动对象
+        :return: None
         """
         # 获取所有窗口句柄
         handles = driver.window_handles
@@ -509,15 +463,11 @@ class ObjectMap:
     def switch_into_iframe(self, driver, locate_iframe_type, locator_iframe_expression, timeout=10):
         """
         切换到指定 iframe
-
-        Args:
-            driver: 浏览器驱动对象
-            locate_iframe_type: iframe 的定位方式（如 By.ID, By.XPATH 等）
-            locator_iframe_expression: iframe 的定位表达式
-            timeout: 等待 iframe 出现的超时时间(秒)，默认10秒
-
-        Raises:
-            ElementNotVisibleException: 未能在超时时间内定位或切换到 iframe
+        :param driver: 浏览器驱动对象
+        :param locate_iframe_type: iframe 的定位方式
+        :param locator_iframe_expression: iframe 的定位表达式
+        :param timeout: 等待 iframe 出现的超时时间(秒)，默认10秒
+        :return: None
         """
         # 等待并获取 iframe 元素（必须可见，确保可切换）
         iframe = self.element_get(
@@ -533,13 +483,9 @@ class ObjectMap:
     def switch_from_iframe_to_content(self, driver, to_root: bool = False):
         """
         退出 iframe，切回页面内容
-
-        Args:
-            driver: 浏览器驱动对象
-            to_root: True 时直接回到顶层文档；False 时仅返回上一层 iframe
-
-        Returns:
-            None
+        :param driver: 浏览器驱动对象
+        :param to_root: True 时直接回到顶层文档，False 时仅返回上一层 iframe
+        :return: None
         """
         # 根据需要选择退出到顶层或仅退出一层 iframe
         if to_root:
@@ -550,18 +496,11 @@ class ObjectMap:
     def action_move_to_element(self, driver, locate_type, locator_expression, timeout=10):
         """
         鼠标悬停到指定元素
-
-        Args:
-            driver: 浏览器驱动对象
-            locate_type: 元素定位方式
-            locator_expression: 元素定位表达式
-            timeout: 等待元素出现的超时时间(秒)，默认10秒
-
-        Returns:
-            ActionChains: ActionChains 对象，可继续链式调用其他操作
-
-        Raises:
-            ElementNotVisibleException: 元素定位失败或元素不可见
+        :param driver: 浏览器驱动对象
+        :param locate_type: 元素定位方式
+        :param locator_expression: 元素定位表达式
+        :param timeout: 等待元素出现的超时时间(秒)，默认10秒
+        :return: ActionChains 对象，可继续链式调用其他操作
         """
         # 获取目标元素
         element = self.element_get(driver, locate_type, locator_expression, timeout=timeout)
@@ -573,18 +512,11 @@ class ObjectMap:
     def action_double_click(self, driver, locate_type, locator_expression, timeout=10):
         """
         双击指定元素
-
-        Args:
-            driver: 浏览器驱动对象
-            locate_type: 元素定位方式
-            locator_expression: 元素定位表达式
-            timeout: 等待元素出现的超时时间(秒)，默认10秒
-
-        Returns:
-            ActionChains: ActionChains 对象，可继续链式调用其他操作
-
-        Raises:
-            ElementNotVisibleException: 元素定位失败或元素不可见
+        :param driver: 浏览器驱动对象
+        :param locate_type: 元素定位方式
+        :param locator_expression: 元素定位表达式
+        :param timeout: 等待元素出现的超时时间(秒)，默认10秒
+        :return: ActionChains 对象，可继续链式调用其他操作
         """
         # 获取目标元素
         element = self.element_get(driver, locate_type, locator_expression, timeout=timeout)
@@ -596,18 +528,11 @@ class ObjectMap:
     def action_context_click(self, driver, locate_type, locator_expression, timeout=10):
         """
         右键点击指定元素
-
-        Args:
-            driver: 浏览器驱动对象
-            locate_type: 元素定位方式
-            locator_expression: 元素定位表达式
-            timeout: 等待元素出现的超时时间(秒)，默认10秒
-
-        Returns:
-            ActionChains: ActionChains 对象，可继续链式调用其他操作
-
-        Raises:
-            ElementNotVisibleException: 元素定位失败或元素不可见
+        :param driver: 浏览器驱动对象
+        :param locate_type: 元素定位方式
+        :param locator_expression: 元素定位表达式
+        :param timeout: 等待元素出现的超时时间(秒)，默认10秒
+        :return: ActionChains 对象，可继续链式调用其他操作
         """
         # 获取目标元素
         element = self.element_get(driver, locate_type, locator_expression, timeout=timeout)

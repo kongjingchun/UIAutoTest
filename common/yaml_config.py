@@ -14,13 +14,7 @@ class GetConf:
     def __init__(self, config_file: Optional[str] = None):
         """
         初始化配置读取器
-        
-        Args:
-            config_file: 配置文件路径，如果为None则使用默认路径 config/environment.yaml
-            
-        Raises:
-            FileNotFoundError: 配置文件不存在
-            yaml.YAMLError: YAML格式错误
+        :param config_file: 配置文件路径，如果为None则使用默认路径 config/environment.yaml
         """
         if config_file is None:
             config_file = get_project_path() + sep(["config", "environment.yaml"], add_sep_before=True)
@@ -31,13 +25,7 @@ class GetConf:
     def _load_config(self) -> Dict[str, Any]:
         """
         加载YAML配置文件
-        
-        Returns:
-            Dict[str, Any]: 配置数据字典
-            
-        Raises:
-            FileNotFoundError: 配置文件不存在
-            yaml.YAMLError: YAML格式错误
+        :return: 配置数据字典
         """
         try:
             with open(self.config_file, "r", encoding="utf-8") as env_file:
@@ -54,13 +42,9 @@ class GetConf:
     def get(self, key: str, default: Any = None) -> Any:
         """
         获取配置值（通用方法）
-        
-        Args:
-            key: 配置键名，支持点号分隔的嵌套键（如 "database.host"）
-            default: 默认值，如果键不存在则返回此值
-            
-        Returns:
-            Any: 配置值，如果不存在则返回默认值
+        :param key: 配置键名，支持点号分隔的嵌套键（如 "database.host"）
+        :param default: 默认值，如果键不存在则返回此值
+        :return: 配置值，如果不存在则返回默认值
         """
         keys = key.split(".")
         value = self.env_data
@@ -75,12 +59,8 @@ class GetConf:
     def get_username_password(self, user) -> Tuple[str, str]:
         """
         获取用户名和密码
-        
-        Returns:
-            Tuple[str, str]: (用户名, 密码)元组
-            
-        Raises:
-            KeyError: 配置文件中缺少username或password字段
+        :param user: 用户标识
+        :return: (用户名, 密码)元组
         """
         try:
             username = self.env_data["user"][user]["username"]
@@ -101,12 +81,7 @@ class GetConf:
     def get_url(self) -> str:
         """
         获取URL配置
-        
-        Returns:
-            str: URL地址
-            
-        Raises:
-            KeyError: 配置文件中缺少url字段
+        :return: URL地址
         """
         url = self.env_data.get("url")
         if url is None:
