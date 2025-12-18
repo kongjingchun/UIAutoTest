@@ -12,15 +12,14 @@ from page.LoginPage import LoginPage
 
 
 class TestIframeBaiduMap:
-    def test_iframe_baidu_map(self):
-        driver = DriverConfig.driver_config()
+    def test_iframe_baidu_map(self, driver):
         LoginPage().login(driver, "jay")
         sleep(2)
         LeftMenuPage().click_level_one_menu(driver, "iframe测试")
         sleep(2)
         IframeBaiduMapPage().switch_2_baidu_map_iframe(driver)
         sleep(2)
-        IframeBaiduMapPage().input_baidu_map_search(driver,"科建大厦")
+        IframeBaiduMapPage().input_baidu_map_search(driver, "科建大厦")
         sleep(2)
         IframeBaiduMapPage().click_baidu_map_search_button(driver)
         sleep(2)

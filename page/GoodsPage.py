@@ -53,7 +53,7 @@ class GoodsPage(GoodsBase, ObjectMap):
         self.select_goods_num(driver, num)
         for img_path in img_list:
             self.upload_goods_img(driver, img_path)
-            sleep(5)
+            sleep(2)
         self.input_goods_price(driver, price)
         self.select_goods_status(driver, status)
         self.click_bottom_button(driver, bottom_button_name)

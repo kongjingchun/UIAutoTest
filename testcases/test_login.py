@@ -10,8 +10,7 @@ from page.LoginPage import LoginPage
 
 
 class TestLogin:
-    def test_login(self):
-        driver = DriverConfig.driver_config()
+    def test_login(self, driver):
         LoginPage().login(driver, "jay")
         sleep(5)
         driver.quit()

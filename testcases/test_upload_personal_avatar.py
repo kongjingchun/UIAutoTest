@@ -12,8 +12,7 @@ from page.LoginPage import LoginPage
 
 
 class TestPersonalInfo:
-    def test_upload_personal_avatar(self):
-        driver = DriverConfig().driver_config()
+    def test_upload_personal_avatar(self, driver):
         LoginPage().login(driver, "jay")
         sleep(2)
         LeftMenuPage().click_level_one_menu(driver, "账户设置")

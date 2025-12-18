@@ -5,30 +5,25 @@
 # @Desc  :
 from time import sleep
 
+import pytest
+
 from config.driver_config import DriverConfig
 from page.LoginPage import LoginPage
 from page.LeftMenuPage import LeftMenuPage
 from page.OrderPage import OrderPage
 
+tab_list = ["全部", "待付款", "待发货", "运输中", "待确认", "待评价"]
+
 
 class TestOrderBuy:
-    driver = DriverConfig.driver_config()
-    LoginPage().login(driver, "jay")
-    sleep(1)
-    LeftMenuPage().click_level_one_menu(driver, "我的订单")
-    sleep(1)
-    LeftMenuPage().click_level_two_menu(driver, "已买到的宝贝")
-    sleep(1)
-    OrderPage().click_order_tab(driver, "全部")
-    sleep(1)
-    OrderPage().click_order_tab(driver, "待付款")
-    sleep(1)
-    OrderPage().click_order_tab(driver, "待发货")
-    sleep(1)
-    OrderPage().click_order_tab(driver, "运输中")
-    sleep(1)
-    OrderPage().click_order_tab(driver, "待确认")
-    sleep(1)
-    OrderPage().click_order_tab(driver, "待评价")
-    sleep(5)
-    driver.quit()
+    @pytest.mark.parametrize("tab_name", tab_list)
+    def test_order_buy(self, driver, tab_name):
+        LoginPage().login(driver, "jay")
+        sleep(1)
+        LeftMenuPage().click_level_one_menu(driver, "我的订单")
+        sleep(1)
+        LeftMenuPage().click_level_two_menu(driver, "已买到的宝贝")
+        sleep(1)
+        tab_list = ["全部", "待付款", "待发货", "运输中", "待确认", "待评价"]
+        OrderPage().click_order_tab(driver, tab_name)
+        sleep(1)

@@ -6,6 +6,7 @@ from urllib.parse import urljoin
 from selenium.common.exceptions import ElementNotVisibleException, WebDriverException, NoSuchElementException, \
     StaleElementReferenceException
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 
 from common.yaml_config import GetConf
 from common.tools import get_project_path, sep
@@ -545,3 +546,72 @@ class ObjectMap:
             driver.switch_to.default_content()
         else:
             driver.switch_to.parent_frame()
+
+    def action_move_to_element(self, driver, locate_type, locator_expression, timeout=10):
+        """
+        鼠标悬停到指定元素
+
+        Args:
+            driver: 浏览器驱动对象
+            locate_type: 元素定位方式
+            locator_expression: 元素定位表达式
+            timeout: 等待元素出现的超时时间(秒)，默认10秒
+
+        Returns:
+            ActionChains: ActionChains 对象，可继续链式调用其他操作
+
+        Raises:
+            ElementNotVisibleException: 元素定位失败或元素不可见
+        """
+        # 获取目标元素
+        element = self.element_get(driver, locate_type, locator_expression, timeout=timeout)
+        # 创建 ActionChains 对象并执行鼠标悬停
+        actions = ActionChains(driver)
+        actions.move_to_element(element)
+        return actions
+
+    def action_double_click(self, driver, locate_type, locator_expression, timeout=10):
+        """
+        双击指定元素
+
+        Args:
+            driver: 浏览器驱动对象
+            locate_type: 元素定位方式
+            locator_expression: 元素定位表达式
+            timeout: 等待元素出现的超时时间(秒)，默认10秒
+
+        Returns:
+            ActionChains: ActionChains 对象，可继续链式调用其他操作
+
+        Raises:
+            ElementNotVisibleException: 元素定位失败或元素不可见
+        """
+        # 获取目标元素
+        element = self.element_get(driver, locate_type, locator_expression, timeout=timeout)
+        # 创建 ActionChains 对象并执行双击
+        actions = ActionChains(driver)
+        actions.double_click(element)
+        return actions
+
+    def action_context_click(self, driver, locate_type, locator_expression, timeout=10):
+        """
+        右键点击指定元素
+
+        Args:
+            driver: 浏览器驱动对象
+            locate_type: 元素定位方式
+            locator_expression: 元素定位表达式
+            timeout: 等待元素出现的超时时间(秒)，默认10秒
+
+        Returns:
+            ActionChains: ActionChains 对象，可继续链式调用其他操作
+
+        Raises:
+            ElementNotVisibleException: 元素定位失败或元素不可见
+        """
+        # 获取目标元素
+        element = self.element_get(driver, locate_type, locator_expression, timeout=timeout)
+        # 创建 ActionChains 对象并执行右键点击
+        actions = ActionChains(driver)
+        actions.context_click(element)
+        return actions
