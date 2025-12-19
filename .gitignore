@@ -1,2 +1,4 @@
-/img/assert_img/
-/img/source_img/
+# 保留文件夹结构，但忽略 assert_img 内的所有内容
+/img/assert_img/*
+# 保留文件夹结构，但忽略 source_img 内的所有内容
+/img/source_img/*

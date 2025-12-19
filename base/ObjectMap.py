@@ -547,13 +547,22 @@ class ObjectMap:
         return actions
 
     def find_img_in_source(self, driver, img_name):
+        """
+        在页面截图中查找目标图像，返回匹配置信度
+        :param driver: 浏览器驱动对象
+        :param img_name: 图像文件名（需要同时存在于 source_img 和 assert_img 目录）
+        :return: 图像匹配置信度值，如果未找到匹配则返回None
+        """
+        # 构建源图像路径（页面截图保存路径）
         source_img_path = get_project_path() + sep(['img', 'source_img', img_name], add_sep_before=True)
+        # 构建目标图像路径（要查找的图像路径）
         search_img_path = get_project_path() + sep(['img', 'assert_img', img_name], add_sep_before=True)
         print(source_img_path)
         print(search_img_path)
         # 等待页面完全加载完成
         self.wait_for_ready_state_complete(driver)
-        # 截图
+        # 截图并保存到源图像路径
         driver.get_screenshot_as_file(source_img_path)
         sleep(3)
+        # 使用图像匹配工具查找目标图像并返回置信度
         return FindImg().get_confidence(source_img_path, search_img_path)

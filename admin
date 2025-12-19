@@ -7,3 +7,4 @@
     pytest-html             简易版测试报告
     aircv                   图像识别1
     opencv-python           图像识别2
+    allure-pytest           allure测试报告
