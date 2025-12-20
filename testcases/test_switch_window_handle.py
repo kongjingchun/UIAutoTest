@@ -7,6 +7,7 @@ from time import sleep
 
 import allure
 
+from common.report_add_img import add_img_2_report
 from page.LoginPage import LoginPage
 from page.ExternalLinkPage import ExternalLinkPage
 from page.LeftMenuPage import LeftMenuPage
@@ -23,10 +24,13 @@ class TestSwitchWindowHandle:
     def test_switch_window_handle(self, driver):
         with allure.step("登录"):
             LoginPage().login(driver, "jay")
+            add_img_2_report(driver, "登录")
         with allure.step("点击外链"):
             LeftMenuPage().click_level_one_menu(driver, "外链")
+            add_img_2_report(driver, "点击外链")
         with allure.step("点击跳转"):
             title = ExternalLinkPage().goto_imooc(driver)
             print("网址切换到" + title)
             assert "慕课网" in title
+            add_img_2_report(driver, "点击跳转")
             sleep(3)
