@@ -3,8 +3,10 @@
 # @Author: kongjingchun
 # @Date  : 2025/12/01/18:31
 # @Desc  :
+import time
 from time import sleep
 
+import requests
 from selenium.webdriver.common.by import By
 from base.LoginBase import LoginBase
 from base.ObjectMap import ObjectMap
@@ -62,6 +64,23 @@ class LoginPage(LoginBase, ObjectMap):
         self.click_need_captcha(driver)
         self.click_login(driver, "登录")
         self.assert_login(driver)
+
+    def api_login(self, driver, user):
+        log.info('跳转登录')
+        self.element_to_url(driver, "/login")
+        username, password = GetConf().get_username_password(user)
+        url = GetConf().get_url()
+        data = {
+            "user": username,
+            "password": password
+        }
+        log.info('通过api登录')
+        res = requests.post(url + "/api/user/login", json=data)
+        token = res.json()["data"]["token"]
+        js_script = "window.sessionStorage.setItem('token','%s');" % token
+        driver.execute_script(js_script)
+        time.sleep(2)
+        self.element_to_url(driver, "/")
 
     def assert_login(self, driver):
         login_success_xpath = LoginBase.login_successful()
