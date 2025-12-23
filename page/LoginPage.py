@@ -28,7 +28,7 @@ class LoginPage(LoginBase, ObjectMap):
         """
         log.info("输入" + input_placeholder + "为：" + str(input_value))
         input_xpath = LoginBase.login_input(input_placeholder)  # 调用父类方法
-        return self.element_fill_value(driver, By.XPATH, input_xpath, input_value)
+        return self.element_input_value(driver, By.XPATH, input_xpath, input_value)
 
     def click_login(self, driver, button_name):
         """

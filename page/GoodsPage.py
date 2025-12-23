@@ -16,11 +16,11 @@ class GoodsPage(GoodsBase, ObjectMap):
 
     def input_goods_title(self, driver, input_value):
         good_title_xpath = self.goods_title()
-        return self.element_fill_value(driver, By.XPATH, good_title_xpath, input_value)
+        return self.element_input_value(driver, By.XPATH, good_title_xpath, input_value)
 
     def input_goods_details(self, driver, input_value):
         good_details_xpath = self.goods_details()
-        return self.element_fill_value(driver, By.XPATH, good_details_xpath, input_value)
+        return self.element_input_value(driver, By.XPATH, good_details_xpath, input_value)
 
     def select_goods_num(self, driver, num):
         good_num_xpath = self.goods_num(True)
@@ -35,7 +35,7 @@ class GoodsPage(GoodsBase, ObjectMap):
 
     def input_goods_price(self, driver, input_value):
         good_price_xpath = self.goods_price()
-        return self.element_fill_value(driver, By.XPATH, good_price_xpath, input_value)
+        return self.element_input_value(driver, By.XPATH, good_price_xpath, input_value)
 
     def select_goods_status(self, driver, select_name):
         good_status_xpath = self.goods_status()

@@ -19,7 +19,7 @@ class IframeBaiduMapPage(IframeBaiduMapBase, ObjectMap):
         :return:
         """
         input_xpath = self.search_input()
-        return self.element_fill_value(driver, By.XPATH, input_xpath, search_value)
+        return self.element_input_value(driver, By.XPATH, input_xpath, search_value)
 
     def click_baidu_map_search_button(self, driver):
         """

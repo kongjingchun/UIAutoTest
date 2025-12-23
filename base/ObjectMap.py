@@ -272,7 +272,7 @@ class ObjectMap:
             # 发生了NoSuchElementException异常，说明页面中未找到该元素，返回False
             return False
 
-    def element_fill_value(self, driver, locate_type, locator_expression, fill_value, timeout=30):
+    def element_input_value(self, driver, locate_type, locator_expression, fill_value, timeout=30):
         """
         向页面元素填充值（输入文本）
         :param driver: 浏览器驱动对象
@@ -594,3 +594,15 @@ class ObjectMap:
         element = self.element_get(driver, locate_type, locator_expression)
         element.screenshot(screenshot_path)
         return screenshot_path
+
+    def scroll_to_element(self, driver, locate_type, locator_expression):
+        """
+        滚动到指定元素
+        :param driver: 浏览器驱动对象
+        :param locate_type: 元素定位方式
+        :param locator_expression: 元素定位表达式
+        :return: None
+        """
+        element = self.element_get(driver, locate_type, locator_expression)
+        driver.execute_script("arguments[0].scrollIntoView();", element)
+        return True
