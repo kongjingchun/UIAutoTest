@@ -44,7 +44,6 @@ class TestTradingFlow:
             )
             add_img_2_report(driver, "新增二手商品")
             sleep(3)
-
         with allure.step("登录买家"):
             LoginPage().api_login(driver, "kmaijia")
             add_img_2_report(driver, "登录买家")
