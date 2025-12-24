@@ -6,3 +6,8 @@
 /img/diff_img/*
 /UIreport
 /UIreport/*
+report.html
+requirements.txt
+test.log
+common/__pycache__/*
+logs/all_logs/*
