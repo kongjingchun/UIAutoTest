@@ -63,6 +63,7 @@ class UserManagePage(UserManageBase, ObjectMap):
         xpath = self.submit_user_button()
         return self.element_click(driver, By.XPATH, xpath)
 
+
     def create_user(self, driver, role_name, user_name, user_code, user_phone, user_email):
         """创建用户
         Args:
@@ -83,6 +84,14 @@ class UserManagePage(UserManageBase, ObjectMap):
         self.element_input_value(driver, By.XPATH, self.input_user_value("工号"), user_code)
         self.element_input_value(driver, By.XPATH, self.input_user_value("手机"), user_phone)
         self.element_input_value(driver, By.XPATH, self.input_user_value("邮箱"), user_email)
-        self.click_submit_user_button(driver)
+        # xpath = self.submit_user_button()
+        # element = self.element_get(driver, By.XPATH, xpath)
+        # # sleep(2)
+        # # element.click()
+        # # sleep(2)
+        # # element.click()
+        # sleep(2)
+        # # element.click()
+        log.info(self.click_submit_user_button(driver))
+        log.info(self.click_submit_user_button(driver))
         sleep(3)
-

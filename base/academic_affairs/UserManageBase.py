@@ -30,4 +30,4 @@ class UserManageBase:
 
     def submit_user_button(self):
         """创建用户按钮的Xpath定位表达式"""
-        return "//button[@class='el-button el-button--primary']"
+        return "//div[@class = 'dialog-footer']/button[contains(.,'创建用户')]"
