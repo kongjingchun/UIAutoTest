@@ -2,7 +2,7 @@
 # @File  : LoginPage.py
 # @Author: 孔敬淳
 # @Date  : 2025/12/01/18:31
-# @Desc  :
+# @Desc  : 登录页面操作类，提供登录相关功能
 import time
 from time import sleep
 
@@ -17,6 +17,7 @@ from logs.log import log
 
 
 class LoginPage(LoginBase, ObjectMap):
+    """登录页面操作类，提供UI登录、API登录及验证码识别等功能"""
     def login_input_value(self, driver, input_placeholder, input_value):
         """
         在登录页面的输入框中填入指定值
@@ -43,10 +44,17 @@ class LoginPage(LoginBase, ObjectMap):
         return self.element_click(driver, By.XPATH, button_xpath)
 
     def click_need_captcha(self, driver):
+        """点击验证码勾选框"""
         need_captcha_xpath = LoginBase.need_captcha()
         return self.element_click(driver, By.XPATH, need_captcha_xpath)
 
     def login(self, driver, user, need_xpath=False):
+        """执行UI登录操作，支持验证码识别
+        
+        :param driver: 浏览器驱动
+        :param user: 用户标识
+        :param need_xpath: 是否需要验证码，默认False
+        """
         self.element_to_url(driver, "/login")
         if need_xpath:
             log.info("需要验证码")
@@ -66,6 +74,11 @@ class LoginPage(LoginBase, ObjectMap):
         self.assert_login(driver)
 
     def api_login(self, driver, user):
+        """通过API接口快速登录，直接设置token到sessionStorage
+        
+        :param driver: 浏览器驱动
+        :param user: 用户标识
+        """
         log.info('跳转登录')
         self.element_to_url(driver, "/login")
         username, password = GetConf().get_username_password(user)
@@ -77,12 +90,16 @@ class LoginPage(LoginBase, ObjectMap):
         log.info('通过api登录')
         res = requests.post(url + "/api/user/login", json=data)
         token = res.json()["data"]["token"]
+        # 构造JS脚本，将token存入sessionStorage
         js_script = "window.sessionStorage.setItem('token','%s');" % token
+        # 执行JS脚本，模拟登录状态
         driver.execute_script(js_script)
         time.sleep(2)
+        # 跳转到首页
         self.element_to_url(driver, "/")
 
     def assert_login(self, driver):
+        """验证登录是否成功"""
         login_success_xpath = LoginBase.login_successful()
         return self.element_appear(driver, By.XPATH, login_success_xpath, timeout=2)
 

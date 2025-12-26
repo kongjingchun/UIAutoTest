@@ -1,88 +1,67 @@
 # encoding: utf-8
-# @File  : driver_config.py
+# @File  : yaml_config.py
 # @Author: 孔敬淳
-# @Date  : 2025/12/01/17:52
-# @Desc  : Chrome 浏览器驱动配置类
-
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.remote.webdriver import WebDriver
-from webdriver_manager.chrome import ChromeDriverManager
+# @Date  : 2025/11/28/16:54
+# @Desc  : YAML配置文件读取类
+import yaml
+from typing import Any, Optional, Dict, Tuple
+from common.tools import get_project_path, sep
 
 
-class DriverConfig:
-    # ChromeDriver 镜像配置
-    CHROMEDRIVER_URL = "https://mirrors.huaweicloud.com/chromedriver"
-    CHROMEDRIVER_LATEST_URL = "https://mirrors.huaweicloud.com/chromedriver/LATEST_RELEASE"
+class GetConf:
+    """配置文件读取类"""
 
-    @staticmethod
-    def _configure_chrome_options() -> webdriver.ChromeOptions:
+    def __init__(self):
+        """初始化并加载环境配置文件"""
+        # 读取环境配置文件
+        with open(get_project_path() + sep(["config", "environment.yaml"], add_sep_before=True), "r",
+                  encoding="utf-8") as env_file:
+            self.env = yaml.load(env_file, Loader=yaml.FullLoader)
+
+    def get_user_info(self, user: str, *fields: str) -> Any:
         """
-        配置 Chrome 浏览器选项
-
-        Returns:
-            ChromeOptions: 配置好的 Chrome 选项对象
+        获取用户信息
+        :param user: 用户标识
+        :param fields: 要获取的字段名，如 'username', 'password', 'email', 'phone' 等
+        :return: 如果传入多个字段，返回元组；如果传入单个字段，返回该字段值；如果不传字段，返回整个用户字典
         """
-        options = webdriver.ChromeOptions()
+        user_data = self.env["user"][user]
 
-        # 去除"Chrome正受到自动测试软件控制"的提示
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        if not fields:
+            # 如果没有指定字段，返回整个用户信息字典
+            return user_data
+        elif len(fields) == 1:
+            # 如果只有一个字段，返回单个值
+            return user_data.get(fields[0])
+        else:
+            # 如果有多个字段，返回元组
+            return tuple(user_data.get(field) for field in fields)
 
-        # 安全与证书相关配置（解决 HTTPS 警告）
-        security_args = [
-            "--disable-features=HttpsFirstMode",
-            "--ignore-certificate-errors",
-            "--allow-insecure-localhost",
-            "--ignore-ssl-errors=true",
-            "--allow-running-insecure-content",
-            "--disable-web-security",
-            "--disable-site-isolation-trials",
-            "--disable-3d-apis",
-        ]
+    def get_username_password(self, user: str) -> Tuple[str, str]:
+        """获取用户名和密码（向后兼容的便捷方法）"""
+        return self.get_user_info(user, "username", "password")
 
-        # 系统兼容性配置
-        compatibility_args = [
-            "--disable-gpu",  # 禁用GPU加速，解决某些系统上的图形渲染问题
-            "--no-sandbox",  # 禁用沙箱模式，适用于容器化环境或权限受限的系统
-            "--disable-dev-shm-usage",  # 禁用devshm使用，解决内存不足问题
-        ]
+    def get_url(self):
+        """获取URL地址"""
+        return self.env["url"]
 
-        # 应用所有配置参数
-        for arg in security_args + compatibility_args:
-            options.add_argument(arg)
+    def get_mysql_config(self):
+        """获取MySQL配置"""
+        return self.env["mysql"]
 
-        return options
+    def get_redis_config(self):
+        """获取Redis配置"""
+        return self.env["redis"]
 
-    @staticmethod
-    def _create_chrome_service() -> ChromeService:
-        """
-        创建 ChromeDriver 服务实例
+    def get_dingding_webhook(self):
+        """获取钉钉WebHook地址"""
+        return self.env["dingding_group"]["webhook"]
 
-        Returns:
-            ChromeService: ChromeDriver 服务对象
-        """
-        driver_manager = ChromeDriverManager(
-            url=DriverConfig.CHROMEDRIVER_URL,
-            latest_release_url=DriverConfig.CHROMEDRIVER_LATEST_URL
-        )
-        return ChromeService(driver_manager.install())
+    def get_jenkins_url(self):
+        """获取jenkins地址"""
+        return self.env["jenkins"]
 
-    @staticmethod
-    def driver_config() -> WebDriver:
-        """
-        初始化 Chrome 浏览器驱动，兼容 Selenium 4.36
 
-        Returns:
-            WebDriver: Chrome WebDriver 实例
-        """
-        options = DriverConfig._configure_chrome_options()
-        service = DriverConfig._create_chrome_service()
-
-        # 初始化 Chrome 浏览器实例
-        driver = webdriver.Chrome(service=service, options=options)
-
-        # 浏览器窗口设置
-        driver.maximize_window()  # 设置浏览器全屏
-        driver.delete_all_cookies()  # 删除所有cookies
-
-        return driver
+if __name__ == '__main__':
+    user_name, user_code, user_phone, user_email = GetConf().get_user_info("dean", "username", "user_code", "phone", "email")
+    print(user_name, user_code, user_phone, user_email)
